@@ -28,7 +28,7 @@ It is built and maintained by **Shartul Kumar**, Senior Azure Migration Architec
 
 > 📖 **Read the full post:** [kshartul.github.io/azure-migration-blueprint](https://kshartul.github.io/azure-migration-blueprint)
 > 
-> 🔗 **Connect:** [linkedin.com/in/shartul](https://linkedin.com/in/shartul-kumar)
+> 🔗 **Connect:** [linkedin.com/in/shartul](https://www.linkedin.com/in/shartul-kumar)
 
 ---
 
@@ -38,7 +38,6 @@ It is built and maintained by **Shartul Kumar**, Senior Azure Migration Architec
 |----------|-------------|--------|------|
 | **Technical Reference Blueprint** | Skills framework, migration patterns, governance standards, RACI matrices, toolchain reference, certification path | DOCX | [Download](docs/AzureMigrationEngineer_Blueprint.docx) |
 | **End-to-End Implementation Plan** | Phase-by-phase delivery plan with all PowerShell, Python, Terraform, KQL and Azure DevOps YAML scripts | DOCX | [Download](docs/AzureMigration_ImplementationPlan.docx) |
-| **Azure Migration Architect CV** | Refactored resume positioned for Azure Migration Engineer roles | DOCX | [Download](docs/Resume_ShartulKumar_AzureMigration.docx) |
 
 ---
 
@@ -302,9 +301,9 @@ MIT — free to use, adapt, and share with attribution.
 
 <div align="center">
 
-**Built by [Shartul Kumar](https://linkedin.com/in/shartul)**  
+**Built by [Shartul Kumar](https://www.linkedin.com/in/shartul)**  
 Senior Azure Migration Architect · Azure Solutions Architect Expert · CKA · Terraform Associate
 
-[LinkedIn](https://linkedin.com/in/shartul) · [GitHub](https://github.com/kshartul) · [Live Post](https://kshartul.github.io/azure-migration-blueprint)
+[LinkedIn](https://www.linkedin.com/in/shartul) · [GitHub](https://github.com/kshartul) · [Live Post](https://kshartul.github.io/azure-migration-blueprint)
 
 </div>
