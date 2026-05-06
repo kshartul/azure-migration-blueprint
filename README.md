@@ -11,8 +11,8 @@
 
 *6 Phases · 13 Sprints · 22+ Scripts & Terraform Modules · 500+ Workload Scale*
 
-[![Live Post](https://img.shields.io/badge/🌐%20Live%20Post-GitHub%20Pages-0D2B4E?style=flat-square)](https://ShartulKumar.github.io/azure-migration-blueprint)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Shartul%20Kumar-0A66C2?style=flat-square&logo=linkedin)](https://linkedin.com/in/shartul-kumar)
+[![Live Post](https://img.shields.io/badge/🌐%20Live%20Post-GitHub%20Pages-0D2B4E?style=flat-square)](https://kshartul.github.io/azure-migration-blueprint)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Shartul%20Kumar-0A66C2?style=flat-square&logo=linkedin)](https://linkedin.com/in/shartul)
 [![Blueprint](https://img.shields.io/badge/📄%20Blueprint%20Doc-Download%20DOCX-1F4E79?style=flat-square)](docs/AzureMigrationEngineer_Blueprint.docx)
 [![Implementation Plan](https://img.shields.io/badge/📋%20Implementation%20Plan-Download%20DOCX-007B8A?style=flat-square)](docs/AzureMigration_ImplementationPlan.docx)
 
@@ -28,7 +28,7 @@ It is built and maintained by **Shartul Kumar**, Senior Azure Migration Architec
 
 > 📖 **Read the full post:** [kshartul.github.io/azure-migration-blueprint](https://kshartul.github.io/azure-migration-blueprint)
 > 
-> 🔗 **Connect:** [linkedin.com/in/shartul](https://www.linkedin.com/in/shartul-kumar)
+> 🔗 **Connect:** [linkedin.com/in/shartul](https://www.linkedin.com/in/shartul)
 
 ---
 
@@ -253,33 +253,6 @@ python scripts/python/P1-02-export-inventory.py
 The full technical post is published at:
 
 > 🌐 **[kshartul.github.io/azure-migration-blueprint](https://kshartul.github.io/azure-migration-blueprint)**
-
-Share on LinkedIn using this feed post template:
-
----
-
-*I built a complete engineering blueprint for large-scale Azure migrations.*
-
-*Not slides. Not a deck. An actual technical framework with:*
-
-*→ PowerShell scripts for Azure Migrate assessment automation*  
-*→ Terraform hub-spoke Landing Zone modules*  
-*→ Reusable 6-stage Azure DevOps CI/CD pipeline template*  
-*→ Wave cutover orchestration with ASR + automated smoke tests*  
-*→ Azure Policy initiative — governance from Day 1, not bolted on*  
-*→ SLO/SLI KQL alert rules and automated quarterly DR tests*  
-
-*6 phases. 13 sprints. 500+ workload scale.*  
-
-*Full post + downloadable docs below 👇*
-
-*#AzureMigration #Terraform #AzureDevOps #CloudArchitecture #InfrastructureAsCode #MicrosoftAzure #DevOps #SRE #FinOps #CAF #GitOps #CloudMigration*
-
----
-
-*(Paste your GitHub Pages URL in the first comment, not the post body)*
-
----
 
 ## Contributing
 
