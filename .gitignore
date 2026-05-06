@@ -1,0 +1,49 @@
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+.terraform.lock.hcl
+tfplan
+tfplan.json
+*.auto.tfvars
+!terraform/envs/*/terraform.tfvars
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+migration_inventory.csv
+finops-tag-compliance*.csv
+dependency-agent-status.csv
+
+# Azure credentials — NEVER commit these
+*.pfx
+*.pem
+*.key
+.env
+.env.*
+*credentials*
+*secret*
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+
+# IDE
+.vscode/settings.json
+.idea/
+*.suo
+*.user
+
+# Pipeline artefacts
+tfplan*
+*.zip
+*.tar.gz

@@ -1,0 +1,205 @@
+# terraform-cicd.yml
+# Reusable 6-stage Terraform CI/CD pipeline template.
+# Consumed by all infra repos via:
+#   resources:
+#     repositories:
+#       - repository: templates
+#         type: git
+#         name: pipelines-templates
+#   steps:
+#     - template: terraform-cicd.yml@templates
+
+parameters:
+  - name: environment
+    type: string
+    values: [dev, qa, prod]
+  - name: workingDirectory
+    type: string
+    default: '.'
+  - name: backendKey
+    type: string
+  - name: serviceConnection
+    type: string
+    default: $(SERVICE_CONNECTION)
+
+stages:
+
+  # ── Stage 1: Lint & Security ──────────────────────────────────────────────
+  - stage: Lint_Security
+    displayName: '1 — Lint & Security Scan'
+    jobs:
+      - job: static_analysis
+        pool: { vmImage: ubuntu-latest }
+        steps:
+          - checkout: self
+
+          - script: terraform fmt -check -recursive ${{ parameters.workingDirectory }}
+            displayName: 'terraform fmt --check'
+
+          - script: |
+              terraform init -backend=false ${{ parameters.workingDirectory }}
+              terraform validate ${{ parameters.workingDirectory }}
+            displayName: 'terraform validate'
+
+          - script: |
+              tflint --init
+              tflint --chdir=${{ parameters.workingDirectory }} --format=compact
+            displayName: 'tflint'
+
+          - script: |
+              tfsec ${{ parameters.workingDirectory }} \
+                --severity HIGH \
+                --format lovely \
+                --no-colour \
+                --exit-code 1
+            displayName: 'tfsec (fail on HIGH/CRITICAL)'
+
+          - script: |
+              checkov -d ${{ parameters.workingDirectory }} \
+                --framework terraform \
+                --compact --output cli \
+                --soft-fail-on MEDIUM \
+                --hard-fail-on HIGH,CRITICAL
+            displayName: 'Checkov CIS benchmark'
+
+  # ── Stage 2: Terraform Plan ────────────────────────────────────────────────
+  - stage: Plan
+    displayName: '2 — Terraform Plan'
+    dependsOn: Lint_Security
+    jobs:
+      - job: terraform_plan
+        pool: { vmImage: ubuntu-latest }
+        steps:
+          - checkout: self
+
+          - task: AzureCLI@2
+            displayName: 'terraform init'
+            inputs:
+              azureSubscription: ${{ parameters.serviceConnection }}
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                terraform init \
+                  -backend-config="resource_group_name=$(TF_BACKEND_RG)" \
+                  -backend-config="storage_account_name=$(TF_BACKEND_SA)" \
+                  -backend-config="container_name=tfstate" \
+                  -backend-config="key=${{ parameters.backendKey }}" \
+                  ${{ parameters.workingDirectory }}
+            env:
+              ARM_CLIENT_ID:       $(ARM_CLIENT_ID)
+              ARM_CLIENT_SECRET:   $(ARM_CLIENT_SECRET)
+              ARM_TENANT_ID:       $(ARM_TENANT_ID)
+              ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+
+          - task: AzureCLI@2
+            displayName: 'terraform plan'
+            inputs:
+              azureSubscription: ${{ parameters.serviceConnection }}
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                terraform plan \
+                  -var-file=envs/${{ parameters.environment }}/terraform.tfvars \
+                  -out=tfplan \
+                  -input=false \
+                  ${{ parameters.workingDirectory }}
+                terraform show -json tfplan > tfplan.json
+            env:
+              ARM_CLIENT_ID:       $(ARM_CLIENT_ID)
+              ARM_CLIENT_SECRET:   $(ARM_CLIENT_SECRET)
+              ARM_TENANT_ID:       $(ARM_TENANT_ID)
+              ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+
+          - task: PublishPipelineArtifact@1
+            inputs:
+              targetPath: tfplan
+              artifact:   tfplan-${{ parameters.environment }}
+
+  # ── Stage 3: Approval Gate ────────────────────────────────────────────────
+  - stage: Approval
+    displayName: '3 — Plan Review & Approval'
+    dependsOn: Plan
+    jobs:
+      - job: await_approval
+        pool: server
+        timeoutInMinutes: 4320   # 3-day approval window
+        steps:
+          - task: ManualValidation@0
+            inputs:
+              notifyUsers: |
+                $(APPROVER_EMAIL_1)
+                $(APPROVER_EMAIL_2)
+              instructions: |
+                Review the Terraform plan artefact (tfplan-${{ parameters.environment }}).
+                Approve only if:
+                  - No unexpected resource destructions
+                  - Plan diff matches the sprint story scope
+                  - No HIGH/CRITICAL tfsec findings unresolved
+              onTimeout: reject
+
+  # ── Stage 4: Terraform Apply ──────────────────────────────────────────────
+  - stage: Apply
+    displayName: '4 — Terraform Apply'
+    dependsOn: Approval
+    jobs:
+      - deployment: terraform_apply
+        environment: ${{ parameters.environment }}
+        pool: { vmImage: ubuntu-latest }
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: AzureCLI@2
+                  displayName: 'terraform apply'
+                  inputs:
+                    azureSubscription: ${{ parameters.serviceConnection }}
+                    scriptType: bash
+                    scriptLocation: inlineScript
+                    inlineScript: |
+                      terraform apply -input=false -auto-approve \
+                        $(Pipeline.Workspace)/tfplan-${{ parameters.environment }}/tfplan
+                  env:
+                    ARM_CLIENT_ID:       $(ARM_CLIENT_ID)
+                    ARM_CLIENT_SECRET:   $(ARM_CLIENT_SECRET)
+                    ARM_TENANT_ID:       $(ARM_TENANT_ID)
+                    ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+
+  # ── Stage 5: Post-Apply Tests ─────────────────────────────────────────────
+  - stage: PostApply_Tests
+    displayName: '5 — Post-Apply Validation'
+    dependsOn: Apply
+    jobs:
+      - job: validate
+        pool: { vmImage: ubuntu-latest }
+        steps:
+          - task: AzureCLI@2
+            displayName: 'Run post-apply validation'
+            inputs:
+              azureSubscription: ${{ parameters.serviceConnection }}
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                pip install azure-identity azure-mgmt-network azure-mgmt-resource --quiet
+                python tests/post-apply/post_apply_validate.py \
+                  --env ${{ parameters.environment }} \
+                  --subscription $(ARM_SUBSCRIPTION_ID)
+
+  # ── Stage 6: Policy Compliance ────────────────────────────────────────────
+  - stage: Compliance
+    displayName: '6 — Azure Policy Compliance'
+    dependsOn: PostApply_Tests
+    jobs:
+      - job: policy_check
+        pool: { vmImage: ubuntu-latest }
+        steps:
+          - task: AzureCLI@2
+            displayName: 'Check Azure Policy compliance'
+            inputs:
+              azureSubscription: ${{ parameters.serviceConnection }}
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                pip install azure-identity azure-mgmt-policyinsights --quiet
+                python tests/post-apply/policy_compliance_check.py \
+                  --subscription $(ARM_SUBSCRIPTION_ID) \
+                  --fail-on-noncompliant

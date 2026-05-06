@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Azure Migration Blueprint — LinkedIn Post | Shartul Kumar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0D2B4E;--blue:#1F5BA8;--azure:#0078D4;--sky:#50E6FF;
+  --teal:#00B0F0;--slate:#556B7A;--smoke:#F0F5FA;--rule:#D0DDE8;
+  --text:#1A1A2E;--muted:#667085;--code-bg:#0D1117;--code-text:#CDD6F4;
+  --tag-bg:#E6F1FB;--tag-text:#0D2B4E;
+  --ph1:#0078D4;--ph2:#005A9E;--ph3:#003B73;
+  --ph4:#007B8A;--ph5:#4B1D8E;--ph6:#1D6B3C;
+  --max:800px;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'DM Sans',sans-serif;
+  color:var(--text);
+  background:#F7F8FA;
+  line-height:1.7;
+  min-height:100vh;
+}
+
+/* ── PAGE SHELL ─────────────────────────────────────────────── */
+.page{max-width:var(--max);margin:0 auto;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.06),0 4px 32px rgba(0,0,0,.08)}
+
+/* ── HERO ───────────────────────────────────────────────────── */
+.hero{
+  background:var(--navy);
+  padding:60px 52px 68px;
+  position:relative;
+  overflow:hidden;
+}
+.hero-rings{position:absolute;inset:0;pointer-events:none}
+.hero-rings circle{fill:none;stroke:rgba(80,230,255,.08)}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(80,230,255,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(80,230,255,.04) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(80,230,255,.1);
+  border:1px solid rgba(80,230,255,.25);
+  border-radius:24px;padding:6px 16px;
+  font-size:11px;font-weight:500;color:var(--sky);
+  letter-spacing:.1em;text-transform:uppercase;
+  margin-bottom:28px;position:relative;
+}
+.hero h1{
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(26px,4.5vw,44px);
+  color:#fff;line-height:1.13;
+  max-width:660px;margin-bottom:22px;
+  position:relative;
+}
+.hero h1 em{font-style:italic;color:var(--sky)}
+.hero-sub{
+  font-size:16px;color:rgba(255,255,255,.6);
+  max-width:540px;line-height:1.65;margin-bottom:36px;
+  position:relative;font-weight:300;
+}
+.hero-author{display:flex;align-items:center;gap:14px;position:relative;margin-bottom:36px}
+.avatar{
+  width:46px;height:46px;border-radius:50%;
+  background:linear-gradient(135deg,var(--azure),var(--teal));
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:500;color:#fff;flex-shrink:0;
+  border:2px solid rgba(255,255,255,.15);
+}
+.author-meta{font-size:13px;color:rgba(255,255,255,.5)}
+.author-meta strong{color:rgba(255,255,255,.9);font-weight:500;display:block;font-size:14px;margin-bottom:1px}
+.hero-divider{border:none;border-top:1px solid rgba(255,255,255,.08);margin:0 0 32px;position:relative}
+.hero-stats{display:flex;gap:0;position:relative}
+.stat{flex:1;text-align:center;padding:0 16px;border-right:1px solid rgba(255,255,255,.08)}
+.stat:last-child{border-right:none}
+.stat-n{font-family:'DM Serif Display',serif;font-size:34px;color:var(--sky);line-height:1;display:block}
+.stat-l{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.08em;text-transform:uppercase;margin-top:5px;display:block}
+
+/* ── BODY ───────────────────────────────────────────────────── */
+.body{padding:52px 52px 64px}
+
+/* Tags */
+.tags{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:36px}
+.tag{
+  background:var(--tag-bg);color:var(--tag-text);
+  font-size:11.5px;font-weight:500;padding:4px 13px;
+  border-radius:20px;letter-spacing:.03em;
+}
+
+/* Lead */
+.lead{
+  font-size:17.5px;color:#334155;line-height:1.8;
+  border-left:3px solid var(--azure);padding-left:22px;
+  margin-bottom:44px;font-weight:300;
+}
+
+/* Section headings */
+h2.sh{
+  font-family:'DM Serif Display',serif;
+  font-size:27px;color:var(--navy);
+  margin:52px 0 18px;
+  padding-bottom:14px;
+  border-bottom:1px solid var(--rule);
+}
+h3.sth{
+  font-size:11px;font-weight:500;color:var(--azure);
+  text-transform:uppercase;letter-spacing:.1em;
+  margin:34px 0 14px;
+}
+p.prose{font-size:15.5px;color:#334155;line-height:1.82;margin-bottom:16px}
+
+/* Phase roadmap */
+.roadmap{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin:28px 0 36px}
+.pc{border-radius:10px;padding:20px 17px;position:relative;overflow:hidden}
+.pc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:10px 10px 0 0}
+.ph1b{background:#EBF3FB}.ph1b::before{background:var(--ph1)}
+.ph2b{background:#E4EDF8}.ph2b::before{background:var(--ph2)}
+.ph3b{background:#DCE6F2}.ph3b::before{background:var(--ph3)}
+.ph4b{background:#E0F3EE}.ph4b::before{background:var(--ph4)}
+.ph5b{background:#EEEDFE}.ph5b::before{background:var(--ph5)}
+.ph6b{background:#E8F3DE}.ph6b::before{background:var(--ph6)}
+.pc-n{font-size:10px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;opacity:.55;margin-bottom:5px}
+.pc-t{font-size:13.5px;font-weight:500;color:var(--navy);margin-bottom:3px;line-height:1.3}
+.pc-w{font-size:11.5px;color:var(--slate)}
+
+/* Metrics strip */
+.metrics{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border:1px solid var(--rule);border-radius:10px;
+  overflow:hidden;margin:28px 0 36px;
+}
+.metric{padding:22px 14px;text-align:center;border-right:1px solid var(--rule)}
+.metric:last-child{border-right:none}
+.metric-n{font-family:'DM Serif Display',serif;font-size:30px;color:var(--azure);line-height:1;display:block}
+.metric-u{font-size:11px;color:var(--slate);display:block}
+.metric-l{font-size:10px;color:var(--muted);letter-spacing:.05em;margin-top:3px;text-transform:uppercase;display:block}
+
+/* Callouts */
+.callout{border-radius:10px;padding:20px 22px;margin:26px 0;display:flex;gap:15px;align-items:flex-start}
+.c-info{background:#EBF3FB;border-left:3px solid var(--azure)}
+.c-warn{background:#FFFBEB;border-left:3px solid #F59E0B}
+.c-ok{background:#F0FDF4;border-left:3px solid #22C55E}
+.callout i{font-size:19px;flex-shrink:0;margin-top:1px}
+.c-info i{color:var(--azure)}.c-warn i{color:#D97706}.c-ok i{color:#16A34A}
+.callout h4{font-size:13.5px;font-weight:500;color:var(--navy);margin-bottom:3px}
+.callout p{font-size:13.5px;color:var(--slate);margin:0;line-height:1.6}
+
+/* Code */
+.code-wrap{border-radius:10px;overflow:hidden;margin:22px 0;border:1px solid #1E2D3D}
+.code-hdr{background:#161B22;padding:10px 17px;display:flex;align-items:center;justify-content:space-between}
+.code-lang{font-size:11.5px;font-weight:500;color:#58A6FF;font-family:'JetBrains Mono',monospace}
+.code-file{font-size:10.5px;color:#6E7681;font-family:'JetBrains Mono',monospace}
+pre{background:#0D1117;padding:22px 20px;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.75;color:#CDD6F4;tab-size:2}
+.kw{color:#FF7B72}.fn{color:#D2A8FF}.str{color:#A5D6FF}.cm{color:#6E7681;font-style:italic}.num{color:#79C0FF}.prop{color:#7EE787}.op{color:#FF7B72}
+code.ic{background:#F0F5FA;padding:1px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--navy)}
+
+/* Checklist */
+.checklist{list-style:none;margin:18px 0}
+.checklist li{display:flex;align-items:flex-start;gap:11px;font-size:15px;color:#334155;padding:9px 0;border-bottom:1px solid var(--rule);line-height:1.6}
+.checklist li:last-child{border-bottom:none}
+.checklist i{color:var(--azure);font-size:16px;flex-shrink:0;margin-top:3px}
+.checklist strong{font-weight:500;color:var(--navy)}
+
+/* Tool grid */
+.tool-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin:22px 0}
+.tool-card{background:var(--smoke);border-radius:9px;padding:15px 16px;display:flex;gap:12px;align-items:flex-start;border:1px solid var(--rule)}
+.tool-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px}
+.ic-blue{background:#EBF3FB;color:var(--azure)}
+.ic-red{background:#FCEBEB;color:#A32D2D}
+.ic-purple{background:#EEEDFE;color:#534AB7}
+.ic-green{background:#E8F3DE;color:#1D6B3C}
+.ic-amber{background:#FFFBEB;color:#D97706}
+.ic-teal{background:#E0F3EE;color:#007B8A}
+.tool-info h4{font-size:13px;font-weight:500;color:var(--navy);margin-bottom:2px}
+.tool-info p{font-size:12px;color:var(--slate);margin:0;line-height:1.5}
+
+/* Pattern table */
+.ptable{width:100%;border-collapse:collapse;margin:22px 0;font-size:13.5px;border:1px solid var(--rule);border-radius:10px;overflow:hidden}
+.ptable th{background:var(--navy);color:#fff;padding:11px 14px;text-align:left;font-weight:500;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.ptable td{padding:11px 14px;border-bottom:1px solid var(--rule);color:#334155;vertical-align:top;line-height:1.5}
+.ptable tr:nth-child(even) td{background:#FAFBFC}
+.ptable tr:last-child td{border-bottom:none}
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap}
+.b-blue{background:#EBF3FB;color:var(--ph1)}
+.b-purple{background:#EEEDFE;color:#534AB7}
+.b-green{background:#E8F3DE;color:var(--ph6)}
+.b-amber{background:#FFFBEB;color:#92400E}
+.b-slate{background:#F0F5FA;color:var(--slate)}
+
+/* Checklist grid */
+.policy-list{list-style:none;margin:18px 0;display:grid;grid-template-columns:1fr 1fr;gap:0}
+.policy-list li{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:#334155;padding:9px 12px 9px 0;border-bottom:1px solid var(--rule);line-height:1.55}
+.policy-list li:nth-last-child(-n+2){border-bottom:none}
+.policy-list i{color:var(--azure);font-size:15px;flex-shrink:0;margin-top:2px}
+.policy-list strong{font-weight:500;color:var(--navy)}
+
+/* CTA */
+.cta{
+  background:var(--navy);border-radius:12px;
+  padding:40px 44px;margin-top:52px;
+  text-align:center;position:relative;overflow:hidden;
+}
+.cta::before,.cta::after{
+  content:'';position:absolute;
+  border:1px solid rgba(80,230,255,.08);border-radius:50%;
+}
+.cta::before{width:300px;height:300px;top:-100px;right:-80px}
+.cta::after{width:200px;height:200px;bottom:-80px;left:-60px}
+.cta h3{font-family:'DM Serif Display',serif;font-size:24px;color:#fff;margin-bottom:12px;position:relative}
+.cta p{font-size:14px;color:rgba(255,255,255,.55);margin-bottom:28px;line-height:1.65;max-width:480px;margin-left:auto;margin-right:auto;position:relative}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative}
+.btn-p{
+  background:var(--azure);color:#fff;
+  padding:11px 24px;border-radius:8px;
+  font-size:14px;font-weight:500;text-decoration:none;
+  display:inline-flex;align-items:center;gap:7px;
+  border:none;cursor:pointer;
+}
+.btn-s{
+  background:transparent;
+  color:rgba(255,255,255,.75);
+  border:1px solid rgba(255,255,255,.2);
+  padding:11px 24px;border-radius:8px;
+  font-size:14px;font-weight:500;text-decoration:none;
+  display:inline-flex;align-items:center;gap:7px;
+  cursor:pointer;
+}
+
+/* Share */
+.share{display:flex;align-items:center;gap:10px;padding:26px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);margin:44px 0 36px;flex-wrap:wrap}
+.share-label{font-size:13px;color:var(--slate);font-weight:500;margin-right:4px}
+.share-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 15px;border-radius:20px;font-size:12.5px;
+  font-weight:500;border:1px solid var(--rule);
+  color:var(--slate);cursor:pointer;background:#fff;
+  font-family:'DM Sans',sans-serif;
+  transition:background .12s,border-color .12s;
+}
+.share-btn:hover{background:var(--smoke);border-color:#b0bec5}
+.share-btn i{font-size:15px}
+.copied{color:var(--azure)!important;border-color:var(--azure)!important}
+
+/* Tags footer */
+.post-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:32px}
+.post-tag{font-size:12px;color:var(--azure);background:var(--tag-bg);padding:3px 11px;border-radius:14px}
+
+/* Related */
+.related h3{font-size:11px;font-weight:500;color:var(--slate);text-transform:uppercase;letter-spacing:.09em;margin-bottom:14px}
+.rel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
+.rel-card{border:1px solid var(--rule);border-radius:10px;padding:16px;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.rel-card:hover{border-color:var(--azure);box-shadow:0 2px 12px rgba(0,120,212,.08)}
+.rel-card .rt{font-size:10px;color:var(--azure);font-weight:500;text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}
+.rel-card p{font-size:13px;color:var(--navy);font-weight:500;line-height:1.4;margin:0}
+
+/* Footer bar */
+.footer{background:var(--navy);padding:28px 52px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.footer-brand{font-family:'DM Serif Display',serif;font-size:17px;color:#fff}
+.footer-brand span{color:var(--sky)}
+.footer-links{display:flex;gap:20px}
+.footer-links a{font-size:12px;color:rgba(255,255,255,.45);text-decoration:none}
+.footer-links a:hover{color:rgba(255,255,255,.8)}
+
+/* Responsive */
+@media(max-width:620px){
+  .hero{padding:36px 28px 48px}
+  .body{padding:32px 28px 48px}
+  .footer{padding:24px 28px}
+  .roadmap,.rel-grid{grid-template-columns:repeat(2,1fr)}
+  .tool-grid,.policy-list{grid-template-columns:1fr}
+  .metrics{grid-template-columns:repeat(2,1fr)}
+  .metrics .metric:nth-child(2){border-right:none}
+  .metrics .metric:nth-child(3){border-top:1px solid var(--rule)}
+  .hero-stats .stat:nth-child(3){border-left:1px solid rgba(255,255,255,.08)}
+}
+
+/* Print */
+@media print{
+  body{background:#fff}
+  .page{box-shadow:none}
+  .share,.cta-btns,.footer-links{display:none}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ══ HERO ═══════════════════════════════════════════════════════ -->
+<div class="hero">
+  <div class="hero-grid"></div>
+  <svg class="hero-rings" viewBox="0 0 800 400" preserveAspectRatio="xMaxYMid slice" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none">
+    <circle cx="720" cy="50" r="200"/>
+    <circle cx="720" cy="50" r="280"/>
+    <circle cx="720" cy="50" r="360"/>
+    <circle cx="80" cy="380" r="150"/>
+    <circle cx="80" cy="380" r="220"/>
+  </svg>
+
+  <div class="hero-badge">
+    <i class="ti ti-cloud-upload"></i>
+    Azure Migration Engineering
+  </div>
+
+  <h1>Engineering a Large-Scale Azure Migration:<br><em>From Discovery to Production in 13 Sprints</em></h1>
+
+  <p class="hero-sub">A practitioner's blueprint covering assessment automation, Landing Zone IaC, CI/CD pipeline design, governance guardrails, cutover orchestration, and full operationalisation — with real scripts and Terraform patterns you can use today.</p>
+
+  <div class="hero-author">
+    <div class="avatar">SK</div>
+    <div class="author-meta">
+      <strong>Shartul Kumar</strong>
+      Senior Azure Migration Architect &nbsp;·&nbsp; Azure Migrate &nbsp;·&nbsp; Terraform &nbsp;·&nbsp; DevOps &nbsp;·&nbsp; Platform Engineering
+    </div>
+  </div>
+
+  <hr class="hero-divider">
+
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-n">6</span><span class="stat-l">Phases</span></div>
+    <div class="stat"><span class="stat-n">13</span><span class="stat-l">Sprints</span></div>
+    <div class="stat"><span class="stat-n">22+</span><span class="stat-l">Scripts & Modules</span></div>
+    <div class="stat"><span class="stat-n">500+</span><span class="stat-l">Workload Scale</span></div>
+  </div>
+</div>
+
+<!-- ══ BODY ════════════════════════════════════════════════════════ -->
+<div class="body">
+
+  <!-- Tags -->
+  <div class="tags">
+    <span class="tag">Azure Migrate</span>
+    <span class="tag">Terraform</span>
+    <span class="tag">Azure DevOps</span>
+    <span class="tag">Landing Zone</span>
+    <span class="tag">PowerShell</span>
+    <span class="tag">Governance</span>
+    <span class="tag">CAF</span>
+    <span class="tag">GitOps</span>
+    <span class="tag">SRE</span>
+    <span class="tag">FinOps</span>
+    <span class="tag">CI/CD</span>
+    <span class="tag">IaC</span>
+  </div>
+
+  <!-- Lead -->
+  <p class="lead">Migrating hundreds of enterprise workloads to Azure is not a lift-and-shift exercise — it is a disciplined engineering programme. This post distils a proven six-phase delivery framework, complete with automation scripts, reusable Terraform patterns, CI/CD pipeline templates, and governance guardrails, so your team can replicate it at scale.</p>
+
+
+  <!-- ── SECTION 1 ───────────────────────────────────────────── -->
+  <h2 class="sh">The Six-Phase Programme at a Glance</h2>
+  <p class="prose">Each phase is time-boxed, produces version-controlled artefacts in Azure Repos, and gates the next phase on signed acceptance criteria. The full programme spans 24–36 weeks for a 100–500 workload migration.</p>
+
+  <div class="roadmap">
+    <div class="pc ph1b"><div class="pc-n">Phase 1</div><div class="pc-t">Discover &amp; Assess</div><div class="pc-w">Weeks 1–4 · S1–S2</div></div>
+    <div class="pc ph2b"><div class="pc-n">Phase 2</div><div class="pc-t">Design &amp; Landing Zone</div><div class="pc-w">Weeks 5–10 · S3–S5</div></div>
+    <div class="pc ph3b"><div class="pc-n">Phase 3</div><div class="pc-t">Build &amp; Automate</div><div class="pc-w">Weeks 11–16 · S6–S8</div></div>
+    <div class="pc ph4b"><div class="pc-n">Phase 4</div><div class="pc-t">Migrate &amp; Execute</div><div class="pc-w">Weeks 17–24 · S9–S12</div></div>
+    <div class="pc ph5b"><div class="pc-n">Phase 5</div><div class="pc-t">Govern &amp; Secure</div><div class="pc-w">Ongoing · S3–S12</div></div>
+    <div class="pc ph6b"><div class="pc-n">Phase 6</div><div class="pc-t">Operate &amp; Optimise</div><div class="pc-w">Post go-live · S13+</div></div>
+  </div>
+
+  <div class="metrics">
+    <div class="metric"><span class="metric-n">100%</span><span class="metric-u"></span><span class="metric-l">Policy as Code</span></div>
+    <div class="metric"><span class="metric-n">40%</span><span class="metric-u">reduction</span><span class="metric-l">Manual effort</span></div>
+    <div class="metric"><span class="metric-n">0</span><span class="metric-u">HIGH / CRIT</span><span class="metric-l">tfsec gate</span></div>
+    <div class="metric"><span class="metric-n">6</span><span class="metric-u">stage gates</span><span class="metric-l">Per pipeline</span></div>
+  </div>
+
+
+  <!-- ── SECTION 2 ───────────────────────────────────────────── -->
+  <h2 class="sh">Phase 1 — Automating Discovery &amp; Assessment</h2>
+  <p class="prose">The first two sprints are entirely about data. You cannot design a migration without an accurate, scored, dependency-aware inventory. Azure Migrate provides the platform; PowerShell and Python provide the automation layer on top of it.</p>
+
+  <h3 class="sth">Deploy the Appliance Programmatically</h3>
+  <p class="prose">Instead of clicking through the portal, deploy the Azure Migrate project and register all required resource providers in a single repeatable PowerShell script. This ensures every programme environment — DEV, QA, PROD — is configured identically.</p>
+
+  <div class="code-wrap">
+    <div class="code-hdr">
+      <span class="code-lang">PowerShell</span>
+      <span class="code-file">P1-01-deploy-migrate-appliance.ps1</span>
+    </div>
+    <pre><span class="cm"># Create Azure Migrate project + register required resource providers</span>
+<span class="kw">param</span>(
+  [Parameter(Mandatory)] [<span class="kw">string</span>]<span class="prop">$ResourceGroupName</span>,
+  [Parameter(Mandatory)] [<span class="kw">string</span>]<span class="prop">$ProjectName</span>,
+  [Parameter(Mandatory)] [<span class="kw">string</span>]<span class="prop">$Location</span>,
+  [Parameter(Mandatory)] [<span class="kw">string</span>]<span class="prop">$SubscriptionId</span>
+)
+
+<span class="fn">Connect-AzAccount</span> -TenantId <span class="prop">$env:ARM_TENANT_ID</span>
+<span class="fn">Set-AzContext</span> -SubscriptionId <span class="prop">$SubscriptionId</span>
+<span class="fn">New-AzResourceGroup</span> -Name <span class="prop">$ResourceGroupName</span> -Location <span class="prop">$Location</span> -Force
+
+<span class="cm"># Register all providers needed for Azure Migrate</span>
+<span class="prop">$providers</span> = <span class="op">@</span>(<span class="str">'Microsoft.Migrate'</span>, <span class="str">'Microsoft.OffAzure'</span>,
+               <span class="str">'Microsoft.DataMigration'</span>, <span class="str">'Microsoft.HybridCompute'</span>)
+<span class="prop">$providers</span> | <span class="fn">ForEach-Object</span> {
+  <span class="fn">Register-AzResourceProvider</span> -ProviderNamespace <span class="prop">$_</span> | <span class="fn">Out-Null</span>
+}
+
+<span class="cm"># Create the Azure Migrate project</span>
+<span class="prop">$resourceId</span> = <span class="str">"/subscriptions/$SubscriptionId/resourceGroups/"</span> +
+               <span class="str">"$ResourceGroupName/providers/Microsoft.Migrate/"</span> +
+               <span class="str">"MigrateProjects/$ProjectName"</span>
+
+<span class="fn">New-AzResource</span> -ResourceId <span class="prop">$resourceId</span> `
+  -ApiVersion <span class="str">"2023-06-06"</span> -Properties <span class="op">@</span>{} `
+  -Location <span class="prop">$Location</span> -Force
+
+<span class="fn">Write-Host</span> <span class="str">"Project ready. Deploy OVA and register appliance via portal."</span> -ForegroundColor <span class="fn">Green</span></pre>
+  </div>
+
+  <h3 class="sth">Score &amp; Wave-Assign Inventory Automatically</h3>
+  <p class="prose">After 30 days of observation, the Python export script calls the Azure Migrate REST API, scores each server by CPU cores, memory, and disk count, and auto-assigns Wave 1 / 2 / 3 — the bottom 40% (simplest) go first, the most complex 20% go last.</p>
+
+  <div class="code-wrap">
+    <div class="code-hdr">
+      <span class="code-lang">Python</span>
+      <span class="code-file">P1-02-export-inventory.py</span>
+    </div>
+    <pre><span class="kw">def</span> <span class="fn">score_workload</span>(server: <span class="kw">dict</span>) -> <span class="kw">dict</span>:
+    props = server.get(<span class="str">'properties'</span>, {})
+    cores = props.get(<span class="str">'numberOfProcessorCore'</span>, <span class="num">0</span>)
+    mem   = props.get(<span class="str">'allocatedMemoryInMB'</span>, <span class="num">0</span>) / <span class="num">1024</span>
+    disks = <span class="fn">len</span>(props.get(<span class="str">'disks'</span>, {}))
+
+    <span class="cm"># Weighted complexity — higher = migrate later</span>
+    score = (cores * <span class="num">2</span>) + (mem * <span class="num">0.5</span>) + (disks * <span class="num">3</span>)
+    tier  = (<span class="str">'T1-Critical'</span> <span class="kw">if</span> score > <span class="num">40</span>
+             <span class="kw">else</span> <span class="str">'T2-Standard'</span> <span class="kw">if</span> score > <span class="num">20</span>
+             <span class="kw">else</span> <span class="str">'T3-Simple'</span>)
+    <span class="kw">return</span> {<span class="str">'ComplexityScore'</span>: <span class="fn">round</span>(score, <span class="num">1</span>), <span class="str">'SuggestedTier'</span>: tier, ...}
+
+<span class="cm"># Auto wave assignment: bottom 40% → Wave 1, mid 40% → Wave 2, top 20% → Wave 3</span>
+total = <span class="fn">len</span>(scored)
+<span class="kw">for</span> i, s <span class="kw">in</span> <span class="fn">enumerate</span>(scored):
+    s[<span class="str">'Wave'</span>] = (<span class="str">'Wave-1'</span> <span class="kw">if</span> i < total * <span class="num">0.4</span>
+                 <span class="kw">else</span> <span class="str">'Wave-2'</span> <span class="kw">if</span> i < total * <span class="num">0.8</span>
+                 <span class="kw">else</span> <span class="str">'Wave-3'</span>)</pre>
+  </div>
+
+  <div class="callout c-info">
+    <i class="ti ti-bulb"></i>
+    <div>
+      <h4>Key principle: data before design</h4>
+      <p>Never enter Phase 2 without a signed-off wave plan. Every Landing Zone design decision — address space, firewall rules, subnet sizing — is shaped by the workload inventory produced in Phase 1.</p>
+    </div>
+  </div>
+
+
+  <!-- ── SECTION 3 ───────────────────────────────────────────── -->
+  <h2 class="sh">Phase 2 — Landing Zone as Code</h2>
+  <p class="prose">The Landing Zone is the foundation every migrated workload lands on. It must be deployed before a single VM is replicated, and it must be entirely defined in Terraform — no manual portal steps, no snowflake configuration.</p>
+
+  <h3 class="sth">Hub-Spoke Network Topology</h3>
+  <p class="prose">The hub VNet hosts Azure Firewall Premium, ExpressRoute/VPN Gateway, Bastion, and the Private DNS Resolver. Spoke VNets are created per workload subscription using <code class="ic">for_each</code>, each peered to the hub with gateway transit enabled. All traffic between spokes flows through the hub firewall — no direct spoke-to-spoke paths.</p>
+
+  <div class="code-wrap">
+    <div class="code-hdr">
+      <span class="code-lang">HCL — Terraform</span>
+      <span class="code-file">modules/networking/hub-spoke/main.tf</span>
+    </div>
+    <pre><span class="cm"># Spoke VNets — one per workload subscription, created with for_each</span>
+<span class="kw">resource</span> <span class="str">"azurerm_virtual_network"</span> <span class="str">"spoke"</span> {
+  <span class="prop">for_each</span>            = <span class="kw">var</span>.spokes
+  <span class="prop">name</span>                = <span class="str">"vnet-${each.key}-${var.environment}-${var.location_short}"</span>
+  <span class="prop">resource_group_name</span> = each.value.resource_group_name
+  <span class="prop">address_space</span>       = [each.value.address_space]
+  <span class="prop">dns_servers</span>         = <span class="kw">var</span>.custom_dns_servers
+  <span class="prop">tags</span>                = local.common_tags
+}
+
+<span class="cm"># Hub → Spoke peering with gateway transit</span>
+<span class="kw">resource</span> <span class="str">"azurerm_virtual_network_peering"</span> <span class="str">"hub_to_spoke"</span> {
+  <span class="prop">for_each</span>                  = <span class="kw">var</span>.spokes
+  <span class="prop">name</span>                      = <span class="str">"peer-hub-to-${each.key}"</span>
+  <span class="prop">virtual_network_name</span>      = azurerm_virtual_network.hub.name
+  <span class="prop">remote_virtual_network_id</span> = azurerm_virtual_network.spoke[each.key].id
+  <span class="prop">allow_forwarded_traffic</span>   = <span class="kw">true</span>
+  <span class="prop">allow_gateway_transit</span>     = <span class="kw">true</span>
+}
+
+<span class="cm"># Spoke → Hub peering with remote gateway use</span>
+<span class="kw">resource</span> <span class="str">"azurerm_virtual_network_peering"</span> <span class="str">"spoke_to_hub"</span> {
+  <span class="prop">for_each</span>                  = <span class="kw">var</span>.spokes
+  <span class="prop">name</span>                      = <span class="str">"peer-${each.key}-to-hub"</span>
+  <span class="prop">virtual_network_name</span>      = azurerm_virtual_network.spoke[each.key].name
+  <span class="prop">remote_virtual_network_id</span> = azurerm_virtual_network.hub.id
+  <span class="prop">use_remote_gateways</span>       = <span class="kw">true</span>
+}</pre>
+  </div>
+
+  <h3 class="sth">Terraform Remote State — First Act</h3>
+  <p class="prose">Before any <code class="ic">terraform init</code>, the PowerShell backend script creates a GRS storage account with soft-delete, blob versioning, and a <code class="ic">CanNotDelete</code> resource lock — preventing accidental state loss for the duration of the programme. The backend configuration block is printed to the terminal ready to paste into <code class="ic">backend.tf</code>.</p>
+
+
+  <!-- ── SECTION 4 ───────────────────────────────────────────── -->
+  <h2 class="sh">Phase 3 — The Reusable CI/CD Pipeline</h2>
+  <p class="prose">Every Terraform repository in the programme — Landing Zone, pattern library, governance — consumes the same reusable Azure DevOps YAML template stored in <code class="ic">pipelines-templates/terraform-cicd.yml</code>. This single template enforces six mandatory stages on every PR merge:</p>
+
+  <ul class="checklist">
+    <li><i class="ti ti-checks"></i><div><strong>Stage 1 — Lint &amp; Format:</strong> <code class="ic">terraform fmt --check</code> and <code class="ic">tflint</code> — zero errors required to pass.</div></li>
+    <li><i class="ti ti-shield-check"></i><div><strong>Stage 2 — Security Scan:</strong> tfsec and Checkov — any HIGH or CRITICAL finding immediately fails the build.</div></li>
+    <li><i class="ti ti-file-search"></i><div><strong>Stage 3 — Terraform Plan:</strong> Authenticated plan stored as a pipeline artefact; diff published for reviewer inspection.</div></li>
+    <li><i class="ti ti-user-check"></i><div><strong>Stage 4 — Manual Approval Gate:</strong> Migration Engineer + Architect must approve the plan diff before apply proceeds. 3-day window before auto-reject.</div></li>
+    <li><i class="ti ti-rocket"></i><div><strong>Stage 5 — Terraform Apply:</strong> Uses the approved plan artefact exactly — no re-plan, no drift from what was reviewed.</div></li>
+    <li><i class="ti ti-activity"></i><div><strong>Stage 6 — Post-Apply Tests:</strong> Python validation script checks VNet topology, firewall provisioning, peering status, and Azure Policy compliance — exits non-zero on any failure.</div></li>
+  </ul>
+
+  <div class="callout c-warn">
+    <i class="ti ti-alert-triangle"></i>
+    <div>
+      <h4>Never allow <code class="ic">terraform apply -auto-approve</code> on PROD</h4>
+      <p>The approval gate exists for a reason. Even if the plan looks identical to DEV, a reviewer's eyes catch destructive changes that automation misses — particularly when resource dependencies shift between migration waves.</p>
+    </div>
+  </div>
+
+  <h3 class="sth">Key Toolchain</h3>
+  <div class="tool-grid">
+    <div class="tool-card"><div class="tool-icon ic-blue"><i class="ti ti-box"></i></div><div class="tool-info"><h4>Terraform + Azure RM Provider</h4><p>Primary IaC engine. Version pinned in versions.tf. tfenv manages version switching across environments.</p></div></div>
+    <div class="tool-card"><div class="tool-icon ic-red"><i class="ti ti-shield"></i></div><div class="tool-info"><h4>tfsec + Checkov</h4><p>Security misconfiguration and CIS benchmark compliance. Hard-fail gates on HIGH/CRITICAL findings.</p></div></div>
+    <div class="tool-card"><div class="tool-icon ic-purple"><i class="ti ti-git-branch"></i></div><div class="tool-info"><h4>Azure DevOps Pipelines</h4><p>Multi-stage YAML pipelines. Single reusable template consumed by all infra repos via resource reference.</p></div></div>
+    <div class="tool-card"><div class="tool-icon ic-green"><i class="ti ti-git-pull-request"></i></div><div class="tool-info"><h4>GitOps — PR-first Workflow</h4><p>No direct commits to main. Every infra change is a reviewed PR with Terraform plan output posted as a comment.</p></div></div>
+    <div class="tool-card"><div class="tool-icon ic-amber"><i class="ti ti-test-pipe"></i></div><div class="tool-info"><h4>Terratest</h4><p>Go-based integration testing for Terraform modules. Runs post-apply in isolated test subscriptions.</p></div></div>
+    <div class="tool-card"><div class="tool-icon ic-teal"><i class="ti ti-file-code"></i></div><div class="tool-info"><h4>terraform-docs</h4><p>Auto-generates module README from variable and output declarations. Runs as a CI step on every merge to main.</p></div></div>
+  </div>
+
+
+  <!-- ── SECTION 5 ───────────────────────────────────────────── -->
+  <h2 class="sh">Phase 4 — Migration Patterns &amp; Cutover Orchestration</h2>
+  <p class="prose">Every workload from the wave plan is assigned one of six migration patterns before Sprint 9. The pattern determines which Terraform module, runbook, and cutover script applies — there are no ad-hoc decisions on cutover night.</p>
+
+  <table class="ptable">
+    <thead>
+      <tr><th>Pattern</th><th>Use Case</th><th>IaC Approach</th><th>Speed</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="badge b-blue">Rehost</span> Lift &amp; Shift</td><td>Migrate VM as-is via ASR replication</td><td>ASR Terraform module + DNS cutover script</td><td><span class="badge b-green">Fastest</span></td></tr>
+      <tr><td><span class="badge b-blue">Replatform</span></td><td>Minor OS or DB optimisation during migration</td><td>Terraform + Ansible post-config playbook</td><td><span class="badge b-green">Fast</span></td></tr>
+      <tr><td><span class="badge b-purple">Refactor</span></td><td>Containerise to AKS or move to PaaS</td><td>Terraform PaaS modules + Helm charts</td><td><span class="badge b-amber">Medium</span></td></tr>
+      <tr><td><span class="badge b-amber">Re-purchase</span></td><td>Replace on-premises app with SaaS (M365, Dynamics)</td><td>Azure Marketplace + ARM linked templates</td><td><span class="badge b-amber">Medium</span></td></tr>
+      <tr><td><span class="badge b-slate">Retire</span></td><td>Decommission — no migration path exists</td><td>terraform destroy pipeline + data archive</td><td><span class="badge b-green">N/A</span></td></tr>
+      <tr><td><span class="badge b-slate">Retain</span></td><td>Regulatory or latency constraint prevents migration</td><td>ExpressRoute + Azure Arc hybrid config</td><td><span class="badge b-slate">On-prem</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sth">Cutover Orchestration — The Exact Sequence</h3>
+  <p class="prose">The cutover PowerShell script follows a strict sequence for every wave. Pre-flight checks validate replication health and lag (must be under 5 minutes). The application is quiesced. ASR planned failover is triggered per VM with a wait loop. Private DNS records are then cut over to target VM private IPs. Finally, the Python smoke test suite runs — if any test fails three times, the rollback script fires ASR failback automatically.</p>
+
+  <div class="code-wrap">
+    <div class="code-hdr">
+      <span class="code-lang">PowerShell</span>
+      <span class="code-file">P4-01-wave-cutover.ps1 (excerpt)</span>
+    </div>
+    <pre><span class="cm"># Pre-flight: validate replication health and lag for each VM</span>
+<span class="kw">foreach</span> (<span class="prop">$vmName</span> <span class="kw">in</span> <span class="prop">$VMNames</span>) {
+  <span class="prop">$item</span> = <span class="fn">Get-AzRecoveryServicesAsrReplicationProtectedItem</span> |
+           <span class="fn">Where-Object</span> { <span class="prop">$_</span>.FriendlyName -eq <span class="prop">$vmName</span> }
+  <span class="kw">if</span> (<span class="prop">$item</span>.ReplicationHealth -ne <span class="str">"Normal"</span>) {
+    <span class="kw">throw</span> <span class="str">"$vmName replication health: $($item.ReplicationHealth)"</span>
+  }
+  <span class="kw">if</span> (<span class="prop">$item</span>.RecoveryPointObjective -gt <span class="num">300</span>) {
+    <span class="fn">Write-Warning</span> <span class="str">"$vmName lag $($item.RecoveryPointObjective)s exceeds 5min"</span>
+  }
+}
+
+<span class="cm"># Trigger planned failover and wait for completion</span>
+<span class="kw">foreach</span> (<span class="prop">$vmName</span> <span class="kw">in</span> <span class="prop">$VMNames</span>) {
+  <span class="fn">Start-AzRecoveryServicesAsrPlannedFailoverJob</span> `
+    -ReplicationProtectedItem <span class="prop">$item</span> -Direction PrimaryToRecovery | <span class="fn">Out-Null</span>
+}
+
+<span class="cm"># DNS cutover — update Private DNS A record to new target IP</span>
+<span class="kw">foreach</span> (<span class="prop">$vmName</span> <span class="kw">in</span> <span class="prop">$VMNames</span>) {
+  <span class="prop">$privateIp</span> = (<span class="fn">Get-AzNetworkInterface</span> -ResourceId <span class="prop">$vm</span>.NetworkProfile.NetworkInterfaces[<span class="num">0</span>].Id `
+    ).IpConfigurations[<span class="num">0</span>].PrivateIpAddress
+  <span class="fn">New-AzPrivateDnsRecordSet</span> -ZoneName <span class="prop">$DnsZoneName</span> -Name <span class="prop">$vmName</span> `
+    -RecordType A -Ttl <span class="num">300</span> `
+    -PrivateDnsRecords (<span class="fn">New-AzPrivateDnsRecordConfig</span> -IPv4Address <span class="prop">$privateIp</span>)
+}
+
+<span class="cm"># Run smoke test suite — rollback triggered automatically on failure</span>
+<span class="fn">python</span> smoke_tests/run_wave_smoke_tests.py --vms (<span class="prop">$VMNames</span> -join <span class="str">','</span>)</pre>
+  </div>
+
+  <div class="callout c-ok">
+    <i class="ti ti-circle-check"></i>
+    <div>
+      <h4>Run test failovers 2 weeks before production cutover</h4>
+      <p>Use ASR's test failover into an isolated network. Validate the application fully, then clean up test VMs. Any DNS or connectivity issues found here are far cheaper to fix than on cutover night.</p>
+    </div>
+  </div>
+
+
+  <!-- ── SECTION 6 ───────────────────────────────────────────── -->
+  <h2 class="sh">Phase 5 — Governance Baked In, Not Bolted On</h2>
+  <p class="prose">Governance is deployed on Day 1 of Sprint 3 — before any workload is migrated. Azure Policy is the enforcement layer; Terraform is the delivery mechanism. Every migration wave subscription receives the same mandatory policy initiative at assignment time.</p>
+
+  <h3 class="sth">The Mandatory Policy Initiative — What It Enforces</h3>
+  <ul class="policy-list">
+    <li><i class="ti ti-map-pin"></i><div><strong>Allowed locations</strong> — Deny resources outside approved Azure regions.</div></li>
+    <li><i class="ti ti-tag"></i><div><strong>Mandatory tagging</strong> — Deny deployments missing Environment, WorkloadName, CostCentre, Owner, MigrationWave.</div></li>
+    <li><i class="ti ti-activity"></i><div><strong>Diagnostic settings</strong> — DeployIfNotExists pushes all resource logs to central Log Analytics.</div></li>
+    <li><i class="ti ti-world-off"></i><div><strong>No public IPs on VMs</strong> — Deny effect. All compute is privately connected.</div></li>
+    <li><i class="ti ti-lock"></i><div><strong>HTTPS-only storage</strong> — Deny plaintext. TLS 1.2 minimum enforced.</div></li>
+    <li><i class="ti ti-shield"></i><div><strong>Defender for Cloud</strong> — DeployIfNotExists enables Standard tier across all resource types.</div></li>
+  </ul>
+
+  <div class="code-wrap">
+    <div class="code-hdr">
+      <span class="code-lang">HCL — Terraform</span>
+      <span class="code-file">modules/governance/policy-initiative/main.tf (excerpt)</span>
+    </div>
+    <pre><span class="kw">resource</span> <span class="str">"azurerm_policy_set_definition"</span> <span class="str">"migration_governance"</span> {
+  <span class="prop">name</span>                = <span class="str">"migration-governance-initiative"</span>
+  <span class="prop">policy_type</span>         = <span class="str">"Custom"</span>
+  <span class="prop">display_name</span>        = <span class="str">"Azure Migration Governance Initiative"</span>
+  <span class="prop">management_group_id</span> = <span class="kw">var</span>.management_group_id
+
+  <span class="cm"># Allowed locations — Deny effect</span>
+  <span class="prop">policy_definition_reference</span> {
+    <span class="prop">policy_definition_id</span> = <span class="str">"/providers/Microsoft.Authorization/policyDefinitions/e56962a6-..."</span>
+    <span class="prop">parameter_values</span> = <span class="fn">jsonencode</span>({
+      listOfAllowedLocations = { value = <span class="str">"[parameters('allowedLocations')]"</span> }
+    })
+  }
+
+  <span class="cm"># Diagnostic settings — DeployIfNotExists</span>
+  <span class="prop">policy_definition_reference</span> {
+    <span class="prop">policy_definition_id</span> = azurerm_policy_definition.diag_settings.id
+    <span class="prop">parameter_values</span> = <span class="fn">jsonencode</span>({
+      workspaceId = { value = <span class="str">"[parameters('logAnalyticsWorkspaceId')]"</span> }
+    })
+  }
+}
+
+<span class="cm"># Assign the initiative at Management Group scope</span>
+<span class="kw">resource</span> <span class="str">"azurerm_management_group_policy_assignment"</span> <span class="str">"migration_governance"</span> {
+  <span class="prop">name</span>                 = <span class="str">"migration-governance"</span>
+  <span class="prop">management_group_id</span>  = <span class="kw">var</span>.management_group_id
+  <span class="prop">policy_definition_id</span> = azurerm_policy_set_definition.migration_governance.id
+  <span class="prop">location</span>             = <span class="kw">var</span>.location
+  <span class="prop">identity</span> { <span class="prop">type</span> = <span class="str">"SystemAssigned"</span> }
+}</pre>
+  </div>
+
+  <h3 class="sth">FinOps from Sprint 6</h3>
+  <p class="prose">Budget alerts at 80% (warning) and 100% (critical) are deployed via Terraform per subscription. A weekly PowerShell tag compliance report scores every resource group against the mandatory tag taxonomy and emails the result to the cloud governance team — non-compliant resources cannot slip through unnoticed.</p>
+
+
+  <!-- ── SECTION 7 ───────────────────────────────────────────── -->
+  <h2 class="sh">Phase 6 — Operationalising for the Long Run</h2>
+  <p class="prose">A migration that hands over unmonitored, undocumented workloads is not a successful migration. Phase 6 establishes the SRE framework, DR automation pipeline, and knowledge transfer programme that make the client team genuinely self-sufficient.</p>
+
+  <h3 class="sth">SLO/SLI Framework — Error Budget Fast-Burn Alert</h3>
+  <p class="prose">Azure Monitor scheduled query rules enforce SLOs via KQL. The fast-burn alert fires when the error budget is burning 14× faster than the 30-day allowance — the "page someone immediately" signal, deployed as Terraform for every Tier 1 workload:</p>
+
+  <div class="code-wrap">
+    <div class="code-hdr">
+      <span class="code-lang">KQL — Azure Monitor Alert Rule</span>
+      <span class="code-file">Error Budget Fast-Burn (14× rate) — Tier 1 workloads</span>
+    </div>
+    <pre><span class="cm">// Fast-burn: error budget consuming 14× faster than 30d SLO allows</span>
+<span class="kw">let</span> errorBudgetPct = <span class="num">1</span> - <span class="num">0.9995</span>;   <span class="cm">// Tier 1 SLO: 99.95% availability</span>
+<span class="kw">let</span> burnMultiple   = <span class="num">14.0</span>;          <span class="cm">// 14× = page immediately</span>
+AppRequests
+| <span class="kw">where</span> AppRoleName == <span class="str">'your-workload-name'</span>
+| <span class="fn">summarize</span>
+    total  = <span class="fn">count</span>(),
+    failed = <span class="fn">countif</span>(Success == <span class="kw">false</span>)
+  <span class="kw">by</span> <span class="fn">bin</span>(TimeGenerated, <span class="num">5m</span>)
+| <span class="kw">extend</span> errorRate = <span class="fn">todouble</span>(failed) / <span class="fn">todouble</span>(total)
+| <span class="kw">where</span> errorRate > errorBudgetPct * burnMultiple</pre>
+  </div>
+
+  <h3 class="sth">Automated Quarterly DR Tests</h3>
+  <p class="prose">A scheduled Azure DevOps pipeline runs on the 1st of every third month at 02:00 UTC. It triggers an ASR test failover into an isolated network, runs the full smoke test suite against the DR VMs, and then cleans up the test environment automatically — all without human intervention. Results publish to the Azure DevOps test reporting dashboard.</p>
+
+  <div class="code-wrap">
+    <div class="code-hdr">
+      <span class="code-lang">YAML — Azure DevOps</span>
+      <span class="code-file">pipelines-templates/dr-test-pipeline.yml (schedule)</span>
+    </div>
+    <pre><span class="cm"># Automated DR test — runs quarterly, no human trigger required</span>
+<span class="prop">schedules</span>:
+  - <span class="prop">cron</span>: <span class="str">'0 2 1 */3 *'</span>          <span class="cm"># 02:00 UTC on 1st of every 3rd month</span>
+    <span class="prop">displayName</span>: Quarterly DR Test
+    <span class="prop">branches</span>: { <span class="prop">include</span>: [main] }
+    <span class="prop">always</span>: <span class="kw">true</span>
+
+<span class="prop">stages</span>:
+  - <span class="prop">stage</span>: TestFailover
+    <span class="prop">jobs</span>:
+      - <span class="prop">deployment</span>: dr_test
+        <span class="prop">environment</span>: dr-test            <span class="cm"># isolated environment in Azure DevOps</span>
+        <span class="prop">strategy</span>:
+          <span class="prop">runOnce</span>:
+            <span class="prop">deploy</span>:
+              <span class="prop">steps</span>:
+                - <span class="prop">script</span>: |
+                    python dr_tests/run_dr_test.py \
+                      --workload <span class="str">'$(WORKLOAD_NAME)'</span> \
+                      --vault    <span class="str">'$(VAULT_NAME)'</span> \
+                      --network  <span class="str">'$(ISOLATED_VNET_ID)'</span>
+
+  - <span class="prop">stage</span>: Cleanup
+    <span class="prop">condition</span>: <span class="fn">always</span>()          <span class="cm"># clean up even if tests fail</span>
+    <span class="prop">jobs</span>:
+      - <span class="prop">job</span>: cleanup_dr_vms
+        <span class="prop">steps</span>:
+          - <span class="prop">script</span>: |
+              <span class="cm"># Removes test failover VMs from the isolated network</span>
+              <span class="prop">Get-AzRecoveryServicesAsrReplicationProtectedItem</span> |
+                Where-Object { <span class="prop">$_</span>.FailoverRecoveryPointId } |
+                ForEach-Object { <span class="prop">Start-AzRecoveryServicesAsrTestFailoverCleanupJob</span> <span class="prop">-ReplicationProtectedItem</span> <span class="prop">$_</span> }</pre>
+  </div>
+
+  <h3 class="sth">Knowledge Transfer — The Real Handover Condition</h3>
+  <p class="prose">Documentation and workshops are necessary but not sufficient. The programme does not close until a client engineer can independently deploy a new module from the pattern library, run a pipeline to PROD, and respond to a Defender for Cloud alert — all without assistance from the migration team. This is witnessed, signed off, and recorded before the contract ends.</p>
+
+  <div class="callout c-info">
+    <i class="ti ti-school"></i>
+    <div>
+      <h4>12 KT activities — all must be completed before programme closure</h4>
+      <p>Terraform &amp; IaC workshops · Azure DevOps pipeline patterns · Azure Policy &amp; Governance lab · Per-workload operational runbooks · SLO/SLI monitoring walkthrough · DR tabletop exercise + live rehearsal · FinOps dashboard handover · Client independence witnessed exercise.</p>
+    </div>
+  </div>
+
+
+  <!-- ── CLOSING ─────────────────────────────────────────────── -->
+  <h2 class="sh">What Makes This Framework Different</h2>
+  <p class="prose">Most migration frameworks focus on the destination — what Azure services to use. This one focuses on the delivery system — how to produce consistent, auditable, repeatable outcomes across every wave, regardless of which engineer is running it.</p>
+  <p class="prose">The reusable Terraform module library, the shared CI/CD pipeline template, the policy initiative deployed on Day 1, and the scored wave inventory all serve one goal: make the second wave as reliable as the first, and the tenth wave as reliable as the second.</p>
+  <p class="prose">The scripts and Terraform patterns in this programme are not one-offs. Every module is versioned, README-generated, and consumed by reference — not copy-pasted. Every pipeline run produces an audit trail from commit to deployed infrastructure. Every policy violation is caught before it reaches PROD. That is what enterprise-scale migration engineering looks like.</p>
+
+  <!-- CTA -->
+  <div class="cta">
+    <h3>Access the Full Technical Blueprint</h3>
+    <p>The complete reference document covers all six phases, 22+ scripts and Terraform modules, RACI matrices, full CI/CD YAML templates, the 13-sprint delivery plan, and handover checklists.</p>
+    <div class="cta-btns">
+      <a class="btn-p" href="docs/AzureMigrationEngineer_Blueprint.docx" download>
+        <i class="ti ti-download"></i> Download Blueprint (DOCX)
+      </a>
+      <a class="btn-s" href="https://github.com/ShartulKumar/azure-migration-blueprint" target="_blank" rel="noopener">
+        <i class="ti ti-brand-github"></i> View on GitHub
+      </a>
+      <a class="btn-s" href="https://linkedin.com/in/shartul-kumar" target="_blank" rel="noopener">
+        <i class="ti ti-brand-linkedin"></i> Connect on LinkedIn
+      </a>
+    </div>
+  </div>
+
+  <!-- Share bar -->
+  <div class="share">
+    <span class="share-label">Share</span>
+    <button class="share-btn" id="copyBtn" onclick="
+      navigator.clipboard.writeText('https://ShartulKumar.github.io/azure-migration-blueprint').then(()=>{
+        this.classList.add('copied');
+        this.innerHTML='<i class=\'ti ti-check\'></i> Copied!';
+        setTimeout(()=>{this.classList.remove('copied');this.innerHTML='<i class=\'ti ti-link\'></i> Copy link'},2000);
+      })">
+      <i class="ti ti-link"></i> Copy link
+    </button>
+    <button class="share-btn"><i class="ti ti-brand-linkedin"></i> LinkedIn</button>
+    <button class="share-btn"><i class="ti ti-brand-x"></i> X / Twitter</button>
+    <button class="share-btn"><i class="ti ti-brand-reddit"></i> Reddit</button>
+    <button class="share-btn" onclick="window.print()"><i class="ti ti-printer"></i> Print / PDF</button>
+  </div>
+
+  <!-- Hashtags -->
+  <div class="post-tags">
+    <span class="post-tag">#AzureMigration</span>
+    <span class="post-tag">#Terraform</span>
+    <span class="post-tag">#AzureDevOps</span>
+    <span class="post-tag">#CloudArchitecture</span>
+    <span class="post-tag">#InfrastructureAsCode</span>
+    <span class="post-tag">#DevOps</span>
+    <span class="post-tag">#MicrosoftAzure</span>
+    <span class="post-tag">#SRE</span>
+    <span class="post-tag">#FinOps</span>
+    <span class="post-tag">#CAF</span>
+    <span class="post-tag">#GitOps</span>
+    <span class="post-tag">#CloudMigration</span>
+  </div>
+
+  <!-- Related -->
+  <div class="related">
+    <h3>Continue Reading</h3>
+    <div class="rel-grid">
+      <div class="rel-card">
+        <div class="rt">Azure Migrate</div>
+        <p>Dependency Mapping at Scale with Azure Migrate Agent APIs</p>
+      </div>
+      <div class="rel-card">
+        <div class="rt">Terraform</div>
+        <p>Designing Reusable Module Libraries for Enterprise IaC Teams</p>
+      </div>
+      <div class="rel-card">
+        <div class="rt">Governance</div>
+        <p>Azure Policy Initiatives: Beyond Audit — Real Enforcement Patterns</p>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /body -->
+
+<!-- ══ FOOTER ══════════════════════════════════════════════════════ -->
+<div class="footer">
+  <div class="footer-brand">Shartul Kumar &nbsp;<span>·</span>&nbsp; Azure Migration Architect</div>
+  <div class="footer-links">
+    <a href="https://linkedin.com/in/shartul-kumar" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="https://github.com/ShartulKumar/azure-migration-blueprint" target="_blank" rel="noopener">GitHub</a>
+    <a href="docs/AzureMigrationEngineer_Blueprint.docx" download>Blueprint Doc</a>
+    <a href="docs/AzureMigration_ImplementationPlan.docx" download>Implementation Plan</a>
+  </div>
+</div>
+
+</div><!-- /page -->
+</body>
+</html>
